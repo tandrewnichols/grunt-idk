@@ -2,7 +2,7 @@ language: node_js
 sudo: false
 addons:
   code_climate:
-    repo_token: 'TODO'
+    repo_token: '3e87823a52ad9379e9c6c757c7c28803dbf44bbf5f3ce49280cd913f92ba0531'
 install:
   - "npm install npm -g"
   - "npm install"
