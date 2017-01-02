@@ -17,5 +17,6 @@ exclude_paths:
   - "**.json"
   - "**.md"
   - "*.js"
+  - "*.gif"
   - "**.coffee"
   - "LICENSE"
