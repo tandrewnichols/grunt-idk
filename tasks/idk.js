@@ -7,7 +7,7 @@ const async = require('async');
 const DEFAULT_PAGE_SIZE = 20;
 const DEFAULT_PAGE_OFFSET = 5;
 
-const self = module.exports = function(grunt) {
+module.exports = function(grunt) {
   grunt.registerTask('idk', require('../package').description, function() {
     // Tell grunt to wait for the task to complete
     var done = this.async();
@@ -63,6 +63,9 @@ const self = module.exports = function(grunt) {
           next(null, answer);
         }
       }, function(err, tasksToRun) {
+        if (err) {
+          done(err);
+        }
         tasksToRun = _.flatten(tasksToRun);
         inquirer.prompt([{
           type: 'ordered',

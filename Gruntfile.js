@@ -79,6 +79,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('mocha', ['mochaTest:test']);
+  grunt.registerTask('test', ['mochaTest:test']);
   grunt.registerTask('default', ['eslint:tasks', 'mocha']);
   grunt.registerTask('cover', ['istanbul:unit', 'open:coverage']);
   grunt.registerTask('ci', ['eslint:tasks', 'mocha', 'travisMatrix']);
