@@ -20,7 +20,8 @@
     "prompt",
     "select",
     "choose",
-    "gruntplugin"
+    "gruntplugin",
+    "interactive"
   ],
   "author": {
     "name": "Andrew Nichols",
