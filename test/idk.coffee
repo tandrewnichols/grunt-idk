@@ -1,6 +1,8 @@
 chalk = require('chalk')
 sinon = require('sinon')
 async = require('async')
+clear = require('clear-require')
+clear('../tasks/idk')
 
 describe 'idk', ->
   Given -> @inquirer =
@@ -134,7 +136,9 @@ describe 'idk', ->
       Given -> @context.options.returns
         size: 10
         offset: 1
+      Given -> @lines = process.env.LINES
       Given -> process.env.LINES = 2
+      afterEach -> process.env.LINES = @lines
       # At the first inquirer prompt, select all tasks (foo, bar, baz)
       Given -> @inquirer.prompt.withArgs([
         type: 'checkbox'
@@ -178,7 +182,7 @@ describe 'idk', ->
       message: 'Select task'
       name: 'tasks'
       choices: [@bar, @baz, @foo]
-      pageSize: 1
+      pageSize: 3
     ]).returns Promise.resolve({ tasks: [@bar, @baz, @foo] })
     # But stub async.mapSeries so it passes an error
     Given -> async.mapSeries.withArgs(['bar', 'baz', 'foo'], sinon.match.func, sinon.match.func).callsArgWith(2, 'error')
