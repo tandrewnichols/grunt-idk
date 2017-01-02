@@ -4,7 +4,7 @@
 
 Interactive grunt help and task selection
 
-![demo](idk.git)
+![demo](idk.gif)
 
 ## Getting Started
 
