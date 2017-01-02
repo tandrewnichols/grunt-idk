@@ -1,7 +1,7 @@
 {
   "name": "grunt-idk",
   "description": "Interactive grunt help and task selection",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "tasks/idk.js",
   "scripts": {
     "test": "grunt",
