@@ -10,6 +10,8 @@ module.exports = function(grunt) {
   grunt.loadTasks('./tasks');
 
   grunt.initConfig({
+    tests: 'test/**/*.coffee',
+    tasks: 'tasks/**/*.js',
     clean: {
       coverage: ['coverage']
     },
@@ -19,7 +21,7 @@ module.exports = function(grunt) {
           configFile: '.eslint.json',
           format: 'node_modules/eslint-codeframe-formatter'
         },
-        src: ['tasks/**/*.js']
+        src: ['<%= tasks %>']
       }
     },
     shell: {
@@ -40,13 +42,13 @@ module.exports = function(grunt) {
         require: ['coffee-script/register', 'should', 'should-sinon' ]
       },
       test: {
-        src: ['test/**/*.coffee']
+        src: ['<%= tests %>']
       },
       watch: {
         options: {
           reporter: 'dot'
         },
-        src: ['test/**/*.coffee']
+        src: ['<%= tests %>']
       }
     },
     istanbul: {
@@ -69,7 +71,7 @@ module.exports = function(grunt) {
     },
     watch: {
       tests: {
-        files: ['tasks/**/*.js', 'test/**/*.coffee'],
+        files: ['<%= tasks %>', '<%= tests %>'],
         tasks: ['eslint:tasks', 'mochaTest:watch'],
         options: {
           atBegin: true
