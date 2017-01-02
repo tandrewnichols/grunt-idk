@@ -45,39 +45,48 @@ module.exports = function(grunt) {
         if (task.multi) {
           var config = grunt.config.getRaw(task.name);
           var targets = _(config).omit(['options']).keys().map(target => `${task.name}:${target}`).value();
-          inquirer.prompt([{
-            type: 'checkbox',
-            message: 'Select target(s)',
-            name: 'targets',
-            choices: targets,
-            pageSize: calcSize(targets)
-          }]).then(answers => {
-            // If they select all, don't pass a target at all
-            if (answers.targets.length === targets.length) {
-              next(null, answer);
-            } else {
-              next(null, answers.targets);
-            }
-          });
+          if (targets.length > 1) {
+            inquirer.prompt([{
+              type: 'checkbox',
+              message: 'Select target(s)',
+              name: 'targets',
+              choices: targets,
+              pageSize: calcSize(targets)
+            }]).then(answers => {
+              // If they select all, don't pass a target at all
+              if (answers.targets.length === targets.length) {
+                next(null, answer);
+              } else {
+                next(null, answers.targets);
+              }
+            });
+          } else {
+            next(null, answer);
+          }
         } else {
           next(null, answer);
         }
       }, function(err, tasksToRun) {
         if (err) {
-          done(err);
+          return done(err);
         }
         tasksToRun = _.flatten(tasksToRun);
-        inquirer.prompt([{
-          type: 'ordered',
-          message: 'Use h to move a task higher, l to move it lower',
-          name: 'order',
-          choices: tasksToRun,
-          default: tasksToRun,
-          pageSize: calcSize(tasksToRun)
-        }]).then(answers => {
-          grunt.task.run(answers.order);
+        if (tasksToRun.length > 1) {
+          inquirer.prompt([{
+            type: 'ordered',
+            message: 'Select order',
+            name: 'order',
+            choices: tasksToRun,
+            default: tasksToRun,
+            pageSize: calcSize(tasksToRun)
+          }]).then(answers => {
+            grunt.task.run(answers.order);
+            done();
+          });
+        } else {
+          grunt.task.run(tasksToRun);
           done();
-        });
+        }
       });
     });
   });

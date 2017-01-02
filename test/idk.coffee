@@ -42,37 +42,56 @@ describe 'idk', ->
   Given -> @grunt.config.getRaw.withArgs('bar').returns { options: 1, quux: 2, blah: 3 }
 
   context 'no options', ->
-    Given -> @context.options.returnsArg(0)
-    # At the first inquirer prompt, select all tasks (foo, bar, baz)
-    Given -> @inquirer.prompt.withArgs([
-      type: 'checkbox'
-      message: 'Select task'
-      name: 'tasks'
-      choices: [@bar, @baz, @foo]
-      pageSize: 3
-    ]).returns Promise.resolve({ tasks: [@bar, @baz, @foo] })
-    # The second prompt will only happen for bar, as it's the only
-    # multi task. Select only bar:quux.
-    Given -> @inquirer.prompt.withArgs([
-      type: 'checkbox'
-      message: 'Select target(s)'
-      name: 'targets'
-      choices: ['bar:quux', 'bar:blah']
-      pageSize: 2
-    ]).returns Promise.resolve({ targets: ['bar:quux'] })
-    # At the last prompt, reorder the items.
-    Given -> @inquirer.prompt.withArgs([
-      type: 'ordered'
-      message: 'Use h to move a task higher, l to move it lower'
-      name: 'order'
-      choices: ['bar:quux', 'baz', 'foo']
-      default: ['bar:quux', 'baz', 'foo']
-      pageSize: 3
-    ]).returns Promise.resolve({ order: ['baz', 'bar:quux', 'foo'] })
-    When (done) ->
-      @context.async.returns done
-      @subject(@grunt)
-    Then -> @grunt.task.run.should.have.been.calledWith ['baz', 'bar:quux', 'foo']
+    context 'multiple tasks and multiple targets', ->
+      Given -> @context.options.returnsArg(0)
+      # At the first inquirer prompt, select all tasks (foo, bar, baz)
+      Given -> @inquirer.prompt.withArgs([
+        type: 'checkbox'
+        message: 'Select task'
+        name: 'tasks'
+        choices: [@bar, @baz, @foo]
+        pageSize: 3
+      ]).returns Promise.resolve({ tasks: [@bar, @baz, @foo] })
+      # The second prompt will only happen for bar, as it's the only
+      # multi task. Select only bar:quux.
+      Given -> @inquirer.prompt.withArgs([
+        type: 'checkbox'
+        message: 'Select target(s)'
+        name: 'targets'
+        choices: ['bar:quux', 'bar:blah']
+        pageSize: 2
+      ]).returns Promise.resolve({ targets: ['bar:quux'] })
+      # At the last prompt, reorder the items.
+      Given -> @inquirer.prompt.withArgs([
+        type: 'ordered'
+        message: 'Select order'
+        name: 'order'
+        choices: ['bar:quux', 'baz', 'foo']
+        default: ['bar:quux', 'baz', 'foo']
+        pageSize: 3
+      ]).returns Promise.resolve({ order: ['baz', 'bar:quux', 'foo'] })
+      When (done) ->
+        @context.async.returns done
+        @subject(@grunt)
+      Then -> @grunt.task.run.should.have.been.calledWith ['baz', 'bar:quux', 'foo']
+
+    context 'only one task selected and it only has one target', ->
+      Given -> @grunt.config.getRaw.withArgs('bar').returns { options: 1, quux: 2 }
+      Given -> @context.options.returnsArg(0)
+      # At the first inquirer prompt, select all tasks (foo, bar, baz)
+      Given -> @inquirer.prompt.withArgs([
+        type: 'checkbox'
+        message: 'Select task'
+        name: 'tasks'
+        choices: [@bar, @baz, @foo]
+        pageSize: 3
+      ]).returns Promise.resolve({ tasks: [@bar] })
+      When (done) ->
+        @context.async.returns done
+        @subject(@grunt)
+      Then ->
+        @grunt.task.run.should.have.been.calledWith ['bar']
+        @inquirer.prompt.callCount.should.equal 1
     
   context 'with options', ->
     context 'where options.size is smaller than the list length', ->
@@ -100,7 +119,7 @@ describe 'idk', ->
       # At the last prompt, reorder the items.
       Given -> @inquirer.prompt.withArgs([
         type: 'ordered'
-        message: 'Use h to move a task higher, l to move it lower'
+        message: 'Select order'
         name: 'order'
         choices: ['bar', 'baz', 'foo']
         default: ['bar', 'baz', 'foo']
@@ -136,7 +155,7 @@ describe 'idk', ->
       # At the last prompt, reorder the items.
       Given -> @inquirer.prompt.withArgs([
         type: 'ordered'
-        message: 'Use h to move a task higher, l to move it lower'
+        message: 'Select order'
         name: 'order'
         choices: ['bar', 'baz', 'foo']
         default: ['bar', 'baz', 'foo']
