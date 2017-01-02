@@ -1,8 +1,6 @@
 chalk = require('chalk')
 sinon = require('sinon')
 async = require('async')
-clear = require('clear-require')
-clear('../tasks/idk')
 
 describe 'idk', ->
   Given -> @inquirer =
